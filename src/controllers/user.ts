@@ -9,8 +9,8 @@ import { UploadedFile } from "express-fileupload";
 
 dotenv.config()
 
-const cloudinary = Cloudinary.v2
-const prisma = new PrismaClient()
+export const cloudinary = Cloudinary.v2
+export const prisma = new PrismaClient()
 
 
 export const registerUser = async (req: Request, res: Response, next: any) => {

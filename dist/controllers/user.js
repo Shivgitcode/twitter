@@ -5,8 +5,8 @@ import jwt from "jsonwebtoken";
 import { AppError } from "../errors/AppError.js";
 import dotenv from "dotenv";
 dotenv.config();
-const cloudinary = Cloudinary.v2;
-const prisma = new PrismaClient();
+export const cloudinary = Cloudinary.v2;
+export const prisma = new PrismaClient();
 export const registerUser = async (req, res, next) => {
     try {
         const file = req.files?.imgFile;

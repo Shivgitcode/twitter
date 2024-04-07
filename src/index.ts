@@ -4,6 +4,9 @@ import dotenv from "dotenv"
 import fileUpload from "express-fileupload"
 import { router as userRouter } from "./routers/user.js"
 import { cloudinaryConnect } from "./cloudinary/config.js"
+import { router as postRouter } from "./routers/post.js"
+import { router as commentRouter } from "./routers/comment.js"
+
 
 dotenv.config()
 
@@ -23,15 +26,17 @@ app.use(fileUpload({
 
 cloudinaryConnect()
 
-app.use("/api/v1", userRouter)
+app.use("/api/v1", userRouter, postRouter, commentRouter)
 
-app.use((err: any, req: Request, res: Response, next: () => void) => {
+
+app.use((err: any, req: Request, res: Response, next) => {
     const { message = "internal server Error", status = 500 } = err
 
     res.status(status).json({
         message: message,
         success: false
     })
+    next(err)
 
 
 })

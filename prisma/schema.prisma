@@ -26,16 +26,16 @@ model Post {
   id       String    @id @default(uuid())
   title    String
   like     Boolean   @default(false)
-  img      String
+  img      String?
   user     User      @relation(fields: [userId], references: [id])
   userId   String
   comments Comment[]
 }
 
 model Comment {
-  id     String @id @default(uuid())
-  title  String
-  img    String
-  post   Post   @relation(fields: [postId], references: [id])
-  postId String
+  id      String  @id @default(uuid())
+  comment String
+  img     String?
+  post    Post    @relation(fields: [postId], references: [id])
+  postId  String
 }

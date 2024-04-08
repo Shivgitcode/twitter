@@ -9,14 +9,23 @@ dotenv.config()
 export const createComment = async (req: Request, res: Response, next: any) => {
     try {
         const { comment } = req.body
+        const { id } = req.params
+        console.log(id)
         const token = req.cookies.jwt
         console.log(token)
         const verifyToken = jwt.verify(token, process.env.JWT_SECRET as string)
         // console.log("this is verify token ",verifyToken)
-        const { id } = verifyToken as JwtPayload
+        const { id: userid } = verifyToken as JwtPayload
         const foundPost = await prisma.post.findFirst({
             where: {
-                userId: id
+                AND: [
+                    {
+                        userId: userid
+                    },
+                    {
+                        id: id
+                    }
+                ]
 
             }
         })
@@ -39,3 +48,15 @@ export const createComment = async (req: Request, res: Response, next: any) => {
     }
 
 }
+
+// export const showComments = async (req: Request, res: Response, next: any) => {
+//     try {
+//         const token = req.cookies.token
+//         const verify = jwt.verify(token, process.env.JWT_SECRET as string)
+//         const { id } = verify as JwtPayload
+//         const posts=
+
+//     } catch (error) {
+
+//     }
+// }

@@ -3,5 +3,5 @@ import { createComment } from "../controllers/comment.js"
 
 export const router = express.Router()
 
-router.post("/comment", createComment)
+router.post("/comment/:id", createComment)
 

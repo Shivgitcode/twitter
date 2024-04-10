@@ -2,7 +2,7 @@ import { PrismaClient } from "@prisma/client";
 import { Response, Request } from "express";
 import Cloudinary from "cloudinary"
 import bcrypt from "bcrypt"
-import jwt from "jsonwebtoken"
+import jwt, { JwtPayload } from "jsonwebtoken"
 import { AppError } from "../errors/AppError.js";
 import dotenv from "dotenv"
 import { UploadedFile } from "express-fileupload";
@@ -16,7 +16,9 @@ export const prisma = new PrismaClient()
 export const registerUser = async (req: Request, res: Response, next: any) => {
     try {
         const file = req.files?.imgFile as UploadedFile
+        console.log(req.body)
         const { password, username, email } = req.body
+        console.log("this is password", password)
         const hashpass = await bcrypt.hash(password, 12)
 
         const response = await cloudinary.uploader.upload(file?.tempFilePath, {
@@ -92,6 +94,42 @@ export const loginUser = async (req: Request, res: Response, next: any) => {
     }
     catch (err) {
         next(err)
+
+    }
+}
+
+
+export const getUser = async (req: Request, res: Response, next: any) => {
+    try {
+        const token = req.cookies.jwt
+        const veriyToken = jwt.verify(token, process.env.JWT_SECRET as string)
+        const { id } = veriyToken as JwtPayload
+        const foundUser = await prisma.user.findUnique({
+            where: {
+                id
+            }
+        })
+
+        res.status(200).json({
+            message: "user found",
+            data: foundUser
+        })
+
+    } catch (error) {
+        next(error)
+
+    }
+}
+
+export const logout = async (req: Request, res: Response, next: any) => {
+    try {
+        res.cookie("jwt", "", { maxAge: 5 })
+        res.status(200).send({
+            message: "logged Out Successfully",
+        })
+
+    } catch (error) {
+        next(error)
 
     }
 }

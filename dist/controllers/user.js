@@ -10,7 +10,9 @@ export const prisma = new PrismaClient();
 export const registerUser = async (req, res, next) => {
     try {
         const file = req.files?.imgFile;
+        console.log(req.body);
         const { password, username, email } = req.body;
+        console.log("this is password", password);
         const hashpass = await bcrypt.hash(password, 12);
         const response = await cloudinary.uploader.upload(file?.tempFilePath, {
             folder: "twitter"
@@ -59,5 +61,35 @@ export const loginUser = async (req, res, next) => {
     }
     catch (err) {
         next(err);
+    }
+};
+export const getUser = async (req, res, next) => {
+    try {
+        const token = req.cookies.jwt;
+        const veriyToken = jwt.verify(token, process.env.JWT_SECRET);
+        const { id } = veriyToken;
+        const foundUser = await prisma.user.findUnique({
+            where: {
+                id
+            }
+        });
+        res.status(200).json({
+            message: "user found",
+            data: foundUser
+        });
+    }
+    catch (error) {
+        next(error);
+    }
+};
+export const logout = async (req, res, next) => {
+    try {
+        res.cookie("jwt", "", { maxAge: 5 });
+        res.status(200).send({
+            message: "logged Out Successfully",
+        });
+    }
+    catch (error) {
+        next(error);
     }
 };

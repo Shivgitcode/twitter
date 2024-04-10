@@ -6,12 +6,22 @@ import { router as userRouter } from "./routers/user.js"
 import { cloudinaryConnect } from "./cloudinary/config.js"
 import { router as postRouter } from "./routers/post.js"
 import { router as commentRouter } from "./routers/comment.js"
+import cors from "cors"
 
 
 dotenv.config()
 
 
 export const app = express()
+
+
+app.use(cors({
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
+    credentials: true,
+    origin: "http://localhost:5173"
+
+}))
+
 
 app.use(express.json())
 

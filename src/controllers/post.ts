@@ -1,20 +1,28 @@
-import { prisma } from "./user.js";
+import { cloudinary, prisma } from "./user.js";
 import { Request, Response } from "express";
 import jwt, { JwtPayload } from "jsonwebtoken"
 import dotenv from "dotenv"
+import { UploadedFile } from "express-fileupload";
 
 dotenv.config()
 
 export const createPost = async (req: Request, res: Response, next: any) => {
     try {
         const { title } = req.body
+        const file = req.files?.imgFile as UploadedFile
+        console.log()
+
+        const response = await cloudinary.uploader.upload(file.tempFilePath, {
+            folder: "postimg"
+        })
         const token = req.cookies.jwt
         const verifyToken = jwt.verify(token, process.env.JWT_SECRET as string)
         const { id: userid } = verifyToken as JwtPayload
         const newPost = await prisma.post.create({
             data: {
                 title,
-                userId: userid
+                userId: userid,
+                img: response.secure_url
 
 
             }
@@ -46,9 +54,6 @@ export const showPost = async (req: Request, res: Response, next: any) => {
                 user: true,
                 comments: true
             },
-            where: {
-                userId: id
-            }
         })
 
         res.status(200).json({

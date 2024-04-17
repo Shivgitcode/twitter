@@ -26,6 +26,7 @@ model Post {
   id       String    @id @default(uuid())
   title    String
   like     Boolean   @default(false)
+  date     DateTime? @default(now())
   img      String?
   user     User      @relation(fields: [userId], references: [id])
   userId   String

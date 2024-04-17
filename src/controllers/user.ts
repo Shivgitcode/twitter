@@ -121,6 +121,27 @@ export const getUser = async (req: Request, res: Response, next: any) => {
     }
 }
 
+export const getParticularUser = async (req: Request, res: Response, next: any) => {
+    try {
+        const { id } = req.params
+        const foundUser = await prisma.user.findFirst({
+            where: {
+                id
+            }
+
+        })
+
+        res.status(200).send({
+            message: "user Found",
+            data: foundUser
+        })
+
+    } catch (error) {
+        next(error)
+
+    }
+}
+
 export const logout = async (req: Request, res: Response, next: any) => {
     try {
         res.cookie("jwt", "", { maxAge: 5 })

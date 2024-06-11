@@ -1,5 +1,5 @@
 import { cloudinary, prisma } from "./user.js";
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import jwt, { JwtPayload } from "jsonwebtoken"
 import dotenv from "dotenv"
 import { UploadedFile } from "express-fileupload";
@@ -44,7 +44,7 @@ export const createPost = async (req: Request, res: Response, next: any) => {
 
 }
 
-export const showPost = async (req: Request, res: Response, next: any) => {
+export const showPost = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const token = req.cookies.jwt
         const verify = jwt.verify(token, process.env.JWT_SECRET as string)
@@ -66,4 +66,29 @@ export const showPost = async (req: Request, res: Response, next: any) => {
         next(err)
 
     }
+}
+
+export const showOnePost = async (req: Request, res: Response, next: any) => {
+    try {
+        const { id } = req.params
+        const foundPost = await prisma.post.findUnique({
+            include: {
+                user: true,
+                comments: true,
+            },
+            where: {
+                id
+            }
+        })
+
+        res.status(200).json({
+            message: "post found",
+            data: foundPost
+        })
+
+    } catch (error) {
+        next(error)
+
+    }
+
 }

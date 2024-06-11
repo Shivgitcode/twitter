@@ -49,3 +49,24 @@ export const showPost = async (req, res, next) => {
         next(err);
     }
 };
+export const showOnePost = async (req, res, next) => {
+    try {
+        const { id } = req.params;
+        const foundPost = await prisma.post.findUnique({
+            include: {
+                user: true,
+                comments: true,
+            },
+            where: {
+                id
+            }
+        });
+        res.status(200).json({
+            message: "post found",
+            data: foundPost
+        });
+    }
+    catch (error) {
+        next(error);
+    }
+};

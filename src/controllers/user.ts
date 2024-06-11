@@ -122,6 +122,7 @@ export const getUser = async (req: Request, res: Response, next: any) => {
 }
 
 export const getParticularUser = async (req: Request, res: Response, next: any) => {
+    console.log(req.params)
     try {
         const { id } = req.params
         const foundUser = await prisma.user.findFirst({
@@ -138,6 +139,18 @@ export const getParticularUser = async (req: Request, res: Response, next: any) 
 
     } catch (error) {
         next(error)
+
+    }
+}
+
+export const getAllUsers = async (req: Request, res: Response, next: any) => {
+    try {
+        const allUsers = await prisma.user.findMany({})
+        res.status(200).send({
+            message: "found all user",
+            data: allUsers
+        })
+    } catch (error) {
 
     }
 }

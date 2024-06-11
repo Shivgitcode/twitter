@@ -6,30 +6,25 @@ export const createComment = async (req, res, next) => {
     try {
         const { comment } = req.body;
         const { id } = req.params;
-        console.log(id);
+        // console.log(id)
         const token = req.cookies.jwt;
         console.log(token);
         const verifyToken = jwt.verify(token, process.env.JWT_SECRET);
-        // console.log("this is verify token ",verifyToken)
+        console.log("this is verify token ", verifyToken);
         const { id: userid } = verifyToken;
         const foundPost = await prisma.post.findFirst({
             where: {
-                AND: [
-                    {
-                        userId: userid
-                    },
-                    {
-                        id: id
-                    }
-                ]
+                id
             }
         });
+        // t
         const postId = foundPost?.id;
+        console.log(postId);
         const newComment = await prisma.comment.create({
             data: {
                 comment,
                 postId: postId // Cast postId to string
-            }
+            },
         });
         res.status(200).json({
             message: "comment created",
@@ -45,7 +40,7 @@ export const createComment = async (req, res, next) => {
 //         const token = req.cookies.token
 //         const verify = jwt.verify(token, process.env.JWT_SECRET as string)
 //         const { id } = verify as JwtPayload
-//         const posts=
+//         const posts =
 //     } catch (error) {
 //     }
 // }

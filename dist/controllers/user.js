@@ -82,6 +82,35 @@ export const getUser = async (req, res, next) => {
         next(error);
     }
 };
+export const getParticularUser = async (req, res, next) => {
+    console.log(req.params);
+    try {
+        const { id } = req.params;
+        const foundUser = await prisma.user.findFirst({
+            where: {
+                id
+            }
+        });
+        res.status(200).send({
+            message: "user Found",
+            data: foundUser
+        });
+    }
+    catch (error) {
+        next(error);
+    }
+};
+export const getAllUsers = async (req, res, next) => {
+    try {
+        const allUsers = await prisma.user.findMany({});
+        res.status(200).send({
+            message: "found all user",
+            data: allUsers
+        });
+    }
+    catch (error) {
+    }
+};
 export const logout = async (req, res, next) => {
     try {
         res.cookie("jwt", "", { maxAge: 5 });

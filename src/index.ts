@@ -1,4 +1,4 @@
-import express, { Request, Response } from "express"
+import express, { NextFunction, Request, Response } from "express"
 import cookieParser from "cookie-parser"
 import dotenv from "dotenv"
 import fileUpload from "express-fileupload"
@@ -39,7 +39,7 @@ cloudinaryConnect()
 app.use("/api/v1", userRouter, postRouter, commentRouter)
 
 
-app.use((err: any, req: Request, res: Response, next) => {
+app.use((err: any, req: Request, res: Response, next: NextFunction): void => {
     const { message = "internal server Error", status = 500 } = err
 
     res.status(status).json({
